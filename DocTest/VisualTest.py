@@ -27,6 +27,7 @@ class VisualTest(object):
     ROBOT_LIBRARY_VERSION = 0.2
     BORDER_FOR_MOVE_TOLERANCE_CHECK = 0
     DPI_DEFAULT = 200
+    MINIMUM_OCR_RESOLUTION_DEFAULT = 300
     WATERMARK_WIDTH = 25
     WATERMARK_HEIGHT = 30
     WATERMARK_CENTER_OFFSET = 3/100
@@ -40,7 +41,7 @@ class VisualTest(object):
     OCR_ENGINE = "tesseract"
     MOVEMENT_DETECTION = "classic"
 
-    def __init__(self, threshold: float =0.0000, DPI: int =DPI_DEFAULT, take_screenshots: bool =False, show_diff: bool =False, ocr_engine: str =OCR_ENGINE, movement_detection: str =MOVEMENT_DETECTION, watermark_file: str =None, screenshot_format: str ='jpg', embed_screenshots: bool =False ,  **kwargs):
+    def __init__(self, threshold: float =0.0000, DPI: int =DPI_DEFAULT, minimum_ocr_resolution: int =MINIMUM_OCR_RESOLUTION_DEFAULT, take_screenshots: bool =False, show_diff: bool =False, ocr_engine: str =OCR_ENGINE, movement_detection: str =MOVEMENT_DETECTION, watermark_file: str =None, screenshot_format: str ='jpg', embed_screenshots: bool =False ,  **kwargs):
         """
         | =Arguments= | =Description= |
         | ``take_screenshots`` | Shall screenshots be taken also for passed comparisons.   |
@@ -61,6 +62,8 @@ class VisualTest(object):
         self.SCREENSHOT_DIRECTORY = Path("screenshots/")
         self.DPI = int(DPI)
         self.DPI_on_lib_init = int(DPI)
+        self.minimum_ocr_resolution = int(minimum_ocr_resolution)
+        self.minimum_ocr_resolution_on_lib_init = int(minimum_ocr_resolution)
         self.take_screenshots = bool(take_screenshots)
         self.show_diff = bool(show_diff)
         self.ocr_engine = ocr_engine
@@ -89,7 +92,7 @@ class VisualTest(object):
             self.PABOTQUEUEINDEX = None
 
     @keyword
-    def compare_images(self, reference_image: str, test_image: str, placeholder_file: str=None, mask: Union[str, dict, list]=None, check_text_content: bool=False, move_tolerance: int=None, contains_barcodes: bool=False, get_pdf_content: bool=False, force_ocr: bool=False, DPI: int=None, watermark_file: str=None, ignore_watermarks: bool=None, ocr_engine: str=None, resize_candidate: bool=False, blur: bool=False , threshold: float =None ,**kwargs):
+    def compare_images(self, reference_image: str, test_image: str, placeholder_file: str=None, mask: Union[str, dict, list]=None, check_text_content: bool=False, move_tolerance: int=None, contains_barcodes: bool=False, get_pdf_content: bool=False, force_ocr: bool=False, DPI: int=None, minimum_ocr_resolution: int=None, watermark_file: str=None, ignore_watermarks: bool=None, ocr_engine: str=None, resize_candidate: bool=False, blur: bool=False , threshold: float =None ,**kwargs):
         """Compares the documents/images ``reference_image`` and ``test_image``.
 
         Result is passed if no visual differences are detected.
@@ -150,6 +153,10 @@ class VisualTest(object):
             self.DPI = self.DPI_on_lib_init
         else:
             self.DPI = int(DPI)
+        if minimum_ocr_resolution is None:
+            self.minimum_ocr_resolution = self.minimum_ocr_resolution_on_lib_init
+        else:
+            self.minimum_ocr_resolution = int(minimum_ocr_resolution)
         if watermark_file is None:
             watermark_file = self.watermark_file
         if ignore_watermarks is None:
@@ -180,8 +187,8 @@ class VisualTest(object):
             raise AssertionError(
                 'The candidate file does not exist: {}'.format(test_image))
 
-        reference_compare_image = CompareImage(reference_image, placeholder_file=placeholder_file, contains_barcodes=contains_barcodes, get_pdf_content=get_pdf_content, DPI=self.DPI, force_ocr=force_ocr, mask=mask, ocr_engine=ocr_engine)
-        candidate_compare_image = CompareImage(test_image, contains_barcodes=contains_barcodes, get_pdf_content=get_pdf_content, DPI=self.DPI)
+        reference_compare_image = CompareImage(reference_image, placeholder_file=placeholder_file, contains_barcodes=contains_barcodes, get_pdf_content=get_pdf_content, DPI=self.DPI, minimum_ocr_resolution=self.minimum_ocr_resolution, force_ocr=force_ocr, mask=mask, ocr_engine=ocr_engine)
+        candidate_compare_image = CompareImage(test_image, contains_barcodes=contains_barcodes, get_pdf_content=get_pdf_content, DPI=self.DPI, minimum_ocr_resolution=self.minimum_ocr_resolution)
 
 
         tic = time.perf_counter()

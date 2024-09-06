@@ -43,6 +43,7 @@ class CompareImage(object):
         self.force_ocr = kwargs.pop('force_ocr', False)
         self.ocr_engine = kwargs.pop('ocr_engine', 'tesseract')
         self.DPI = int(kwargs.pop('DPI', 200))
+        self.MINIMUM_OCR_RESOLUTION = int(kwargs.pop('minimum_ocr_resolution', 300))
         if is_url(image):
             self.image = download_file_from_url(image)
         else:
