@@ -53,6 +53,7 @@ class VisualTest(object):
         | ``threshold`` | Threshold for visual comparison between 0.0000 and 1.0000 . Default is 0.0000. Higher values mean more tolerance for visual differences. |
         | ``movement_detection`` | Relevant when using ``move_tolerance`` option in ``Compare Images``. Possible options are ``classic``, ``template`` and ``orb``. They use different ways of identifying a moved object/section between two images |
         | ``embed_screenshots`` | Embed screenshots in log.html instead of saving them as files |
+        | ``minimum_ocr_resolution`` | If OCR is used and DPI is lower than the ``minimum_ocr_resolution`` DPI, image is re-rendered at ``DPI`` resolution |
         | ``**kwargs`` | Everything else |
 
         Those arguments will be taken as default, but some can be overwritten in the keywords.
@@ -114,6 +115,7 @@ class VisualTest(object):
         | ``resize_candidate`` | Allow visual comparison, even of documents have different sizes |
         | ``blur`` | Blur the image before comparison to reduce visual difference caused by noise |
         | ``threshold`` | Threshold for visual comparison between 0.0000 and 1.0000 . Default is 0.0000. Higher values mean more tolerance for visual differences. |
+        | ``minimum_ocr_resolution`` | If OCR is used and DPI is lower than the ``minimum_ocr_resolution`` DPI, image is re-rendered at ``DPI`` resolution |
         | ``**kwargs`` | Everything else |
         
 
